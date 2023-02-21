@@ -1,0 +1,41 @@
+@use '../../utils/styles.variables' as styles;
+
+@mixin taskLayout {
+  margin: 1.5rem;
+  width: 200px;
+  display: flex;
+  align-items: center;
+}
+
+.task {
+  @include taskLayout;
+
+  color: styles.$contrastColor;
+  background-color: styles.$primaryColor;
+  border-radius: 1rem;
+  box-shadow: 6px 6px styles.$secondaryColor;
+
+  .check-image {
+    margin: 10px 10px 10px 15px;
+    width: 30px;
+
+    &:hover {
+      cursor: pointer;
+      border-radius: 50px;
+      box-shadow: rgba(255, 255, 255, 1) 0px 0px 5px;
+    }
+  }
+
+  .task-text {
+    width: 100%;
+
+    .task-title,
+    .task-deadline {
+      margin: 8px;
+    }
+
+    .task-title {
+      font-weight: bold;
+    }
+  }
+}
