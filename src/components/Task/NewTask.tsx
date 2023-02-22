@@ -1,6 +1,9 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Task } from '../../models/task.model';
 
+import Button from '../UI/Button';
+import Input from '../UI/Input';
+
 import styles from './NewTask.module.scss';
 
 interface NewTaskProps {
@@ -16,7 +19,7 @@ const NewTask = ({ setTaskList }: NewTaskProps) => {
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (taskName === "") return;
+    if (taskName === '') return;
 
     setTaskList((prevValue) => {
       const tasks = [...prevValue];
@@ -36,7 +39,7 @@ const NewTask = ({ setTaskList }: NewTaskProps) => {
   return (
     <div className={styles.task}>
       <form onSubmit={submitHandler}>
-        <input
+        <Input
           name="task"
           value={taskName}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -45,7 +48,7 @@ const NewTask = ({ setTaskList }: NewTaskProps) => {
           placeholder="New task"
           required
         />
-        <input
+        <Input
           type="datetime-local"
           id="meeting-time"
           name="deadline"
@@ -54,7 +57,9 @@ const NewTask = ({ setTaskList }: NewTaskProps) => {
           min={new Date().toISOString().substring(0, 16)}
           required
         />
-        <button type="submit">Add New Task</button>
+        <Button type="submit">
+          <p>Add New Task</p>
+        </Button>
       </form>
     </div>
   );

@@ -1,0 +1,32 @@
+@use '../../utils/styles.variables' as styles;
+
+.button {
+  color: styles.$primaryColor;
+  background-color: styles.$contrastColor;
+  border: 1px solid styles.$primaryColor;
+  border-radius: 8px;
+  box-shadow: 2px 2px styles.$secondaryColor;
+
+  p {
+    padding: 4px;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: none;
+
+    color: styles.$contrastColor;
+    background-color: styles.$primaryColor;
+  }
+
+  &:disabled {
+    &:hover {
+      cursor: default;
+      color: styles.$primaryColor;
+      background-color: styles.$contrastColor;
+      box-shadow: 2px 2px styles.$secondaryColor;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+@use '../../utils/styles.variables' as styles;
+
+.input {
+  padding: 6px 8px;
+
+  color: styles.$primaryColor;
+  background-color: styles.$contrastColor;
+  border: 1px solid styles.$primaryColor;
+  border-radius: 8px;
+  box-shadow: 2px 2px styles.$secondaryColor;
+  font-size: 14px;
+
+  &:hover {
+    cursor: text;
+  }
+
+  &::placeholder {
+    color: styles.$primaryColor;
+    opacity: 0.85;
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
+
+  &:focus::placeholder {
+    color: transparent;
+  }
+}

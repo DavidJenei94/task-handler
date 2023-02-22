@@ -4,7 +4,12 @@
 .task {
   @include taskStyles.taskLayout;
   min-height: 100px;
+  padding: 4px;
 
   border: 2px dashed styles.$secondaryColor;
   background-color: styles.$contrastColor;
+
+  input, button {
+    margin: 2px;
+  }
 }

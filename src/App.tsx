@@ -1,17 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Navigate, Route, Routes } from 'react-router-dom';
+
 import Header from './components/Layout/Header';
 import Main from './components/Layout/Main';
-import Task from './components/Task/SingleTask';
 import TaskList from './components/Task/TaskList';
+import Login from './components/User/Login';
+import Registration from './components/User/Registration';
+
+import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <Header/>
+      <Header />
       <Main>
-        <TaskList />
+        <Routes>
+          <Route path="/" element={<TaskList />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registration" element={<Registration />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </Main>
     </div>
   );

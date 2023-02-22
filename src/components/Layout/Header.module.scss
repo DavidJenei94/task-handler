@@ -4,10 +4,15 @@
   display: flex;
   align-items: center;
   height: 50px;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
 
   background-color: styles.$primaryColor;
   color: styles.$contrastColor;
+
+  a {
+    text-decoration: none;
+    color: styles.$contrastColor;
+  }
 
   .profile {
     margin-left: auto;
