@@ -1,7 +1,7 @@
 @use '../../utils/styles.variables' as styles;
 
 @mixin taskLayout {
-  margin: 1.5rem;
+  margin: 1rem 1rem;
   width: 250px;
   display: flex;
   align-items: center;

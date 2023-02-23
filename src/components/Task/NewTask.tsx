@@ -1,5 +1,8 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { Task } from '../../models/task.model';
+import { addTask } from '../../service/task.api';
+import AuthContext from '../../store/auth-context';
+import FeedbackContext from '../../store/feedback-context';
 
 import Button from '../UI/Button';
 import Input from '../UI/Input';
@@ -11,29 +14,40 @@ interface NewTaskProps {
 }
 
 const NewTask = ({ setTaskList }: NewTaskProps) => {
-  const [taskName, setTaskName] = useState<string>('');
-  const [deadline, setDeadline] = useState<string>(
-    new Date().toISOString().substring(0, 16)
-  );
+  const authCtx = useContext(AuthContext);
+  const feedbackCtx = useContext(FeedbackContext);
 
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const [taskName, setTaskName] = useState<string>('');
+  const [deadline, setDeadline] = useState<string>(new Date().toISOString());
+
+  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (taskName === '') return;
 
-    setTaskList((prevValue) => {
-      const tasks = [...prevValue];
-      tasks.push({
-        id: 8,
-        task: taskName,
-        deadline: new Date(deadline),
-        done: false,
+    try {
+      const newTask = await addTask(taskName, deadline, authCtx.id);
+
+      setTaskList((prevValue) => {
+        const tasks = [...prevValue];
+        tasks.push({
+          id: newTask.id,
+          task: taskName,
+          deadline: new Date(deadline),
+          done: false,
+        });
+
+        tasks.sort((a: any, b: any) => {
+          return a.deadline - b.deadline;
+        });
+
+        return tasks;
       });
 
-      return tasks;
-    });
-
-    console.log('New Task Added!');
+      feedbackCtx.showMessage(newTask.message, 4000);
+    } catch (error: any) {
+      feedbackCtx.showMessage(error.message, 4000);
+    }
   };
 
   return (
@@ -52,7 +66,7 @@ const NewTask = ({ setTaskList }: NewTaskProps) => {
           type="datetime-local"
           id="meeting-time"
           name="deadline"
-          value={deadline}
+          value={deadline.substring(0, 16)}
           onChange={(event) => setDeadline(event.target.value)}
           min={new Date().toISOString().substring(0, 16)}
           required

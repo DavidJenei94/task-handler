@@ -16,5 +16,11 @@
 
   .profile {
     margin-left: auto;
+
+    .logged-in-profile {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
   }
 }

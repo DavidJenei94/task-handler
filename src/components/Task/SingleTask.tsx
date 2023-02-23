@@ -1,9 +1,13 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
 import { Task } from '../../models/task.model';
+import { deleteTask, updateTask } from '../../service/task.api';
+import FeedbackContext from '../../store/feedback-context';
 
 import styles from './SingleTask.module.scss';
 import checkedCircle from '../../assets/checked-circle.png';
 import emptyCircle from '../../assets/empty-circle.png';
+import { toIsoString } from '../../utils/general.utils';
+import useLongPress from '../../hooks/useLongPress';
 
 interface SingleTaskProps {
   task: Task;
@@ -11,30 +15,52 @@ interface SingleTaskProps {
 }
 
 const SingleTask = ({ task, setTaskList }: SingleTaskProps) => {
-  const checkHandler = () => {
-    setTaskList((prevState) => {
-      return prevState.map((taskInList) => {
-        if (task.id === taskInList.id) {
-          return { ...taskInList, done: !task.done };
-        }
+  const feedbackCtx = useContext(FeedbackContext);
+  
+    const handleDoubleClick = async () => {
+      try {
+        const data = await deleteTask(task.id);
+  
+        setTaskList((prevState) => {
+          return prevState.filter((taskInList) => taskInList.id !== task.id);
+        });
+  
+        feedbackCtx.showMessage(data.message, 4000);
+      } catch (error: any) {
+        feedbackCtx.showMessage(error.message, 4000);
+      }
+    };
 
-        return taskInList;
+  const longPressEvent = useLongPress(handleDoubleClick, () => {}, {
+    shouldPreventDefault: true,
+    delay: 500,
+  });
+
+  const checkHandler = async () => {
+    try {
+      await updateTask(task.id, task.done ? 0 : 1);
+
+      setTaskList((prevState) => {
+        return prevState.map((taskInList) => {
+          if (task.id === taskInList.id) {
+            return { ...taskInList, done: !task.done };
+          }
+
+          return taskInList;
+        });
       });
-    });
+    } catch (error: any) {
+      feedbackCtx.showMessage(error.message, 4000);
+    }
   };
 
-  const handleDoubleClick = () => {
-    setTaskList((prevState) => {
-      return prevState.filter((taskInList) => taskInList.id !== task.id);
-    });
-  };
-
-  const deadline = `${task.deadline
-    .toISOString()
-    .substring(0, 10)} ${task.deadline.toISOString().substring(11, 16)}`;
+  const deadline = `${toIsoString(task.deadline).substring(
+    0,
+    10
+  )} ${toIsoString(task.deadline).substring(11, 16)}`;
 
   return (
-    <div className={styles.task} onDoubleClick={handleDoubleClick}>
+    <div className={styles.task} onDoubleClick={handleDoubleClick} {...longPressEvent}>
       <img
         src={task.done ? checkedCircle : emptyCircle}
         className={styles['check-image']}

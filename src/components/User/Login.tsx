@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import FeedbackContext from '../../store/feedback-context';
+import AuthContext from '../../store/auth-context';
+import { login } from '../../service/user.api';
 
 import UserForm from './UserForm';
 import Button from '../UI/Button';
@@ -9,15 +12,45 @@ import styles from './Login.module.scss';
 const Login = () => {
   const navigate = useNavigate();
 
+  const feedbackCtx = useContext(FeedbackContext);
+  const authCtx = useContext(AuthContext);
+
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const formIsValid = email && password;
 
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (authCtx.isAuthenticated) {
+      navigate('/');
+    }
+  }, []);
+
+  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!formIsValid) return;
+
+    try {
+      const data = await login(email, password);
+
+      if (!data.user) {
+        throw new Error(data.message);
+      }
+
+      const user = JSON.parse(data.user)[0];
+      authCtx.login(user.id, user.email);
+    } catch (error: any) {
+      feedbackCtx.showMessage(error.message, 4000);
+
+      setEmail('');
+      setPassword('');
+      return;
+    }
+
+    navigate('/');
+
+    feedbackCtx.showMessage('User logged in.', 4000);
   };
 
   const navigateToRegistrationHandler = () => {
