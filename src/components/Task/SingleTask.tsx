@@ -2,12 +2,12 @@ import { Dispatch, SetStateAction, useContext } from 'react';
 import { Task } from '../../models/task.model';
 import { deleteTask, updateTask } from '../../service/task.api';
 import FeedbackContext from '../../store/feedback-context';
+import { isToday, isTomorrow, toIsoString } from '../../utils/general.utils';
+import useLongPress from '../../hooks/useLongPress';
 
 import styles from './SingleTask.module.scss';
 import checkedCircle from '../../assets/checked-circle.png';
 import emptyCircle from '../../assets/empty-circle.png';
-import { toIsoString } from '../../utils/general.utils';
-import useLongPress from '../../hooks/useLongPress';
 
 interface SingleTaskProps {
   task: Task;
@@ -16,20 +16,20 @@ interface SingleTaskProps {
 
 const SingleTask = ({ task, setTaskList }: SingleTaskProps) => {
   const feedbackCtx = useContext(FeedbackContext);
-  
-    const handleDoubleClick = async () => {
-      try {
-        const data = await deleteTask(task.id);
-  
-        setTaskList((prevState) => {
-          return prevState.filter((taskInList) => taskInList.id !== task.id);
-        });
-  
-        feedbackCtx.showMessage(data.message, 4000);
-      } catch (error: any) {
-        feedbackCtx.showMessage(error.message, 4000);
-      }
-    };
+
+  const handleDoubleClick = async () => {
+    try {
+      const data = await deleteTask(task.id);
+
+      setTaskList((prevState) => {
+        return prevState.filter((taskInList) => taskInList.id !== task.id);
+      });
+
+      feedbackCtx.showMessage(data.message, 4000);
+    } catch (error: any) {
+      feedbackCtx.showMessage(error.message, 4000);
+    }
+  };
 
   const longPressEvent = useLongPress(handleDoubleClick, () => {}, {
     shouldPreventDefault: true,
@@ -54,13 +54,24 @@ const SingleTask = ({ task, setTaskList }: SingleTaskProps) => {
     }
   };
 
+  const deadlineColorClass = isToday(task.deadline)
+    ? 'red'
+    : isTomorrow(task.deadline)
+    ? 'yellow'
+    : '';
+  const deadlineClass = `${styles['task-deadline']} ${styles[deadlineColorClass]}`;
+
   const deadline = `${toIsoString(task.deadline).substring(
     0,
     10
   )} ${toIsoString(task.deadline).substring(11, 16)}`;
 
   return (
-    <div className={styles.task} onDoubleClick={handleDoubleClick} {...longPressEvent}>
+    <div
+      className={styles.task}
+      onDoubleClick={handleDoubleClick}
+      {...longPressEvent}
+    >
       <img
         src={task.done ? checkedCircle : emptyCircle}
         className={styles['check-image']}
@@ -69,7 +80,7 @@ const SingleTask = ({ task, setTaskList }: SingleTaskProps) => {
       />
       <div className={styles['task-text']}>
         <p className={styles['task-title']}>{task.task}</p>
-        <p className={styles['task-deadline']}>{deadline}</p>
+        <p className={deadlineClass}>{deadline}</p>
       </div>
     </div>
   );

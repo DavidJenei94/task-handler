@@ -25,3 +25,34 @@ export const toIsoString = (date: Date) => {
     pad(Math.abs(tzo) % 60)
   );
 };
+
+export const isToday = (date: Date) => {
+  const today = new Date();
+
+  // 👇️ Today's date
+  console.log(today);
+
+  if (
+    today.getFullYear() === date.getFullYear() &&
+    today.getMonth() === date.getMonth() &&
+    today.getDate() === date.getDate()
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+export const isTomorrow = (date: Date) => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // 👇️ Tomorrow's date
+  console.log(tomorrow);
+
+  if (tomorrow.toDateString() === date.toDateString()) {
+    return true;
+  }
+
+  return false;
+};
