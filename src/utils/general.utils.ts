@@ -29,9 +29,6 @@ export const toIsoString = (date: Date) => {
 export const isToday = (date: Date) => {
   const today = new Date();
 
-  // 👇️ Today's date
-  console.log(today);
-
   if (
     today.getFullYear() === date.getFullYear() &&
     today.getMonth() === date.getMonth() &&
@@ -46,9 +43,6 @@ export const isToday = (date: Date) => {
 export const isTomorrow = (date: Date) => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-
-  // 👇️ Tomorrow's date
-  console.log(tomorrow);
 
   if (tomorrow.toDateString() === date.toDateString()) {
     return true;
