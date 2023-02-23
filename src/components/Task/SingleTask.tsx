@@ -32,7 +32,7 @@ const SingleTask = ({ task, setTaskList }: SingleTaskProps) => {
   };
 
   const longPressEvent = useLongPress(handleDoubleClick, () => {}, {
-    shouldPreventDefault: true,
+    shouldPreventDefault: false,
     delay: 500,
   });
 
