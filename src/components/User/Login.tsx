@@ -24,7 +24,7 @@ const Login = () => {
     if (authCtx.isAuthenticated) {
       navigate('/');
     }
-  }, []);
+  }, [authCtx.isAuthenticated, navigate]);
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

@@ -3,6 +3,7 @@ import { Task } from '../../models/task.model';
 import { addTask } from '../../service/task.api';
 import AuthContext from '../../store/auth-context';
 import FeedbackContext from '../../store/feedback-context';
+import { toIsoString } from '../../utils/general.utils';
 
 import Button from '../UI/Button';
 import Input from '../UI/Input';
@@ -18,7 +19,9 @@ const NewTask = ({ setTaskList }: NewTaskProps) => {
   const feedbackCtx = useContext(FeedbackContext);
 
   const [taskName, setTaskName] = useState<string>('');
-  const [deadline, setDeadline] = useState<string>(new Date().toISOString());
+  const [deadline, setDeadline] = useState<string>(
+    toIsoString(new Date()).substring(0, 16)
+  );
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,6 +30,10 @@ const NewTask = ({ setTaskList }: NewTaskProps) => {
 
     try {
       const newTask = await addTask(taskName, deadline, authCtx.id);
+
+      if (!newTask.id) {
+        throw new Error(newTask.message);
+      }
 
       setTaskList((prevValue) => {
         const tasks = [...prevValue];
@@ -66,7 +73,7 @@ const NewTask = ({ setTaskList }: NewTaskProps) => {
           type="datetime-local"
           id="meeting-time"
           name="deadline"
-          value={deadline.substring(0, 16)}
+          value={deadline}
           onChange={(event) => setDeadline(event.target.value)}
           min={new Date().toISOString().substring(0, 16)}
           required

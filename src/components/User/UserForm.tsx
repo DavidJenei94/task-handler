@@ -39,6 +39,7 @@ const UserForm = ({
         type="password"
         value={password}
         onChange={passwordChangeHandler}
+        minLength={8}
         required
       />
       <br />

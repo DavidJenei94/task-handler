@@ -18,7 +18,7 @@ function App() {
 
   useEffect(() => {
     authCtx.checkUser();
-  }, []);
+  }, [authCtx]);
 
   return (
     <div className="App">

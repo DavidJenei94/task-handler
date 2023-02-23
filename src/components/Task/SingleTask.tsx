@@ -65,6 +65,7 @@ const SingleTask = ({ task, setTaskList }: SingleTaskProps) => {
         src={task.done ? checkedCircle : emptyCircle}
         className={styles['check-image']}
         onClick={checkHandler}
+        alt="Check/uncheck task circle."
       />
       <div className={styles['task-text']}>
         <p className={styles['task-title']}>{task.task}</p>

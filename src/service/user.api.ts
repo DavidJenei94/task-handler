@@ -19,7 +19,7 @@ export const register = async (email: string, password: string) => {
       throw new Error(data.message);
     }
 
-    return data.message;
+    return data;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -34,10 +34,7 @@ export const login = async (email: string, password: string) => {
       body: JSON.stringify({ email, password }),
     };
 
-    const response = await fetch(
-      `${backendUrl}/login.php`,
-      requestOptions
-    );
+    const response = await fetch(`${backendUrl}/login.php`, requestOptions);
     const data = await response.json();
 
     if (!response.ok) {
